@@ -1,0 +1,72 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel = "import" href = "../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel = "import" href = "../bower_components/paper-item/paper-item.html">
+<link rel = "import" href = "../bower_components/paper-listbox/paper-listbox.html">
+<link rel = "import" href = "../bower_components/neon-animation/web-animations.html"> 
+<link rel = "import" href = "../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+<style is="custom-style" include="demo-pages-shared-styles">
+  paper-dropdown-menu, paper-listbox {
+    width: 250px;
+  }
+  paper-dropdown-menu {
+    height: 200px;
+    margin: auto;
+    display: block;
+  }
+</style>
+
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card" style="text-align: center; background-color: #c2f0c2;">
+      <h1>WELCOME TO OUR SHOP</h1>
+      
+      <paper-dropdown-menu placeholder = "Select Category" on-iron-select="_itemSelected">
+         <paper-listbox slot = "dropdown-content" class = "dropdown-content" >
+            <paper-item>ladies_outerwear</paper-item>
+            <paper-item>ladies_tshirts</paper-item>
+            <paper-item>mens_outerwear</paper-item>
+            <paper-item>mens_tshirts</paper-item>
+         </paper-listbox>
+      </paper-dropdown-menu>
+    </div>
+  </template>
+
+  <script>
+    class MyView1 extends Polymer.Element {
+      static get is() { return 'my-view1'; }
+
+      _itemSelected (e) {
+        var selectedItem = e.target.selectedItem;
+        if (selectedItem) {
+        window.history.pushState({}, null, '/list?name=' + selectedItem.innerText);
+        window.dispatchEvent(new CustomEvent('location-changed'));
+        }
+      }
+
+    }
+
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>

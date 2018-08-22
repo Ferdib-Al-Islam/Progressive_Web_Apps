@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view2">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <h1>You Can Choose From Here</h1>
+    </div>
+
+    <div>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        <div class="all-things" style = "margin-left: 200px;">
+            <div class="row">
+                <template is="dom-repeat" items="{{catList}}">
+               
+                    <div class="col-md-5" style="border: 2px solid black; display: block; margin: 5px; padding: 10px; text-align: center; background-color: #008080; font-weight: bold;">
+                        <a href$="details?category=[[categoryName]]&name=[[item.name]]"> 
+                          <div class="product-name" style="color: white;">Name: <span>{{item.name}}</span></div>
+                          <div class="product-title" style="color: white;">Title: <span>{{item.title}}</span></div>
+                          <div class="product-cat" style="color: white;">Category: <span>{{item.category}}</span></div>
+                          <div class="product-price" style="color: darkmagenta;">Price: <span>{{item.price}}</span></div>
+                          <div class="product-img"> <img src$="{{item.image}}"></div> 
+                      </a>
+                    </div>
+               
+                </template>
+            </div>
+        </div>
+
+    </div>
+  </template>
+
+  <script>
+    class MyView2 extends Polymer.Element {
+      static get is() { return 'my-view2'; }
+
+      static get properties() {
+        return {
+          catList: Array,
+          categoryName: String
+        };
+      }
+
+      static get observers() {
+        return [
+          '_observersCategoryitems(route.__queryParams.name)'
+        ];
+      }
+
+      _observersCategoryitems(categoryName) {
+
+        if (typeof categoryName == 'undefined') {
+          return [];
+        }
+
+        this.set("categoryName", categoryName);
+        let self = this,
+        xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET", 'data/' + categoryName + '.json', true);
+        xhttp.send(); 
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              self.set('catList', JSON.parse(this.responseText));
+            }
+          };
+        }
+
+        ready() {
+          super.ready();
+          this.categoryName = this.route.__queryParams.name;
+          }
+        }
+
+        window.customElements.define(MyView2.is, MyView2);
+  </script>
+</dom-module>
+  

@@ -1,0 +1,82 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view3">
+<template>
+    <style include="shared-styles">
+    :host {
+    display: block;
+
+    padding: 10px;
+    }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <div class="card" style="text-align: center;">
+        <h1>Product Details</h1>
+        <h1 style="color:indigo;"> [[route.__queryParams.name]]</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="all-details" style = "border: 4px solid black; font-size: 20px; text-align: center; background-color: #fab1a0; color: black; padding: 10px; margin-left: 100px; margin-right: 100px;">
+                    <span> <img src$="[[catDetail.image]]"></span>
+                    <div class="name-deatils" style="text-align: left;">
+                        <p><span><strong>Name:</strong> [[catDetail.name]]</span></p>
+                        <p><span><strong>Description:</strong> [[catDetail.description]]</span></p>
+                        <p><span><strong>Price:</strong> [[catDetail.price]]</span></p>
+                        <!-- <p><span><strong>Title:</strong> [[catDetail.title]]</span></p> -->
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    class MyView3 extends Polymer.Element {
+    static get is() { return 'my-view3'; }
+
+    static get properties() {
+        return {
+          catDetail: Object
+      };
+    }
+
+    static get observers() {
+      return [
+          '_observeItem(route.__queryParams.name, route.__queryParams.category)'
+        ]
+    }
+
+    _observeItem(name, categoryName) {
+          let self = this,
+          xhttp = new XMLHttpRequest();
+
+          xhttp.open("GET", 'data/' + categoryName + '.json', true);
+          xhttp.send(); 
+          xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                let categoryList = JSON.parse(this.responseText);
+                console.log(categoryList);
+                  
+                categoryList.forEach(function(item) {
+                    if(item.name.replace(/\+/g, ' ') == name) {
+                        self.set("catDetail", item);
+                    }
+                });
+              }
+            };
+        }
+    }
+
+    window.customElements.define(MyView3.is, MyView3);
+</script>
+</dom-module>
